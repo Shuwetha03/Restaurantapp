@@ -10,8 +10,8 @@ import com.npci.restaurantapp.entity.Restaurant;
 
 public interface RestaurantDao extends JpaRepository<Restaurant, Integer>{
 
-	public Optional<Restaurant> findBySNameOrCityOrStateOrPincode(String sName, String city,String state,Integer pincode);
-
 	public FoodItem save(FoodItem fooditem);
+
+	public List<Restaurant> findBySNameOrCityOrStateOrPincode(String sName, String city, String state, Integer pincode);
 
 }

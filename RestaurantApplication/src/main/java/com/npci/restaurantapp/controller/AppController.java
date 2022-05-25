@@ -1,7 +1,7 @@
 package com.npci.restaurantapp.controller;
 
 import java.util.List;
-
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.npci.restaurantapp.entity.Comment;
@@ -51,11 +52,14 @@ public class AppController {
 		return new ResponseEntity<>(cutoutFoodItem,HttpStatus.OK);
 	}
 	
-	@GetMapping("/rest/{sName}/{city}/{state}/{pincode}")
-	public ResponseEntity<Restaurant> getByfirstSNameOrCityOrStateOrPincode(@PathVariable(value="sName",required = false)String sName,@PathVariable(value="city",required = false)String city ,@PathVariable(value="state",required = false)String state,@PathVariable(value="pincode",required = false) Integer pincode)
+	@GetMapping(value = { "/rest/{sName}","/rest/{pincode}" ,"/rest/{sName}/{city}","/rest/{sName}/{city}/{state}","/rest/{sName}/{city}/{state}/{pincode}" })
+	@ResponseBody
+	public ResponseEntity<Stream<List<FoodItem>> > getByfirstSNameOrCityOrStateOrPincode(@PathVariable(required = false) String sName,@PathVariable(required = false) String city ,@PathVariable(required = false) String state,@PathVariable(required = false) Integer pincode)
 	{
-		Restaurant r = irestaurantservices.getByfirstSNameOrCityOrStateOrPincode(sName,city,state,pincode);
-		return new ResponseEntity<>(r,HttpStatus.OK);
+		
+		Stream<List<FoodItem>>  r = irestaurantservices.getByfirstSNameOrCityOrStateOrPincode(sName,city,state,pincode);
+		
+		return new ResponseEntity<>(r,HttpStatus.ACCEPTED);
 	}
 
 

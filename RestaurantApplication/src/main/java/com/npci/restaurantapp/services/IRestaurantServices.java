@@ -2,6 +2,7 @@ package com.npci.restaurantapp.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,8 +25,8 @@ public interface IRestaurantServices {
 	
 	List<Comment> Comments(Integer restID);
 	
-	Restaurant getByfirstSNameOrCityOrStateOrPincode(String sName,String city,String state, Integer pincode);
-
+	Stream<List<FoodItem>> getByfirstSNameOrCityOrStateOrPincode(String SName, String city, String state, Integer pincode);
+	
 	FoodItem updateFood(FoodItem foodItem);
 	 	
 }
