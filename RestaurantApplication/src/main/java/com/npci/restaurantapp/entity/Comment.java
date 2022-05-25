@@ -20,7 +20,6 @@ import lombok.ToString;
 @Table
 
 public class Comment {
-
 	
 	@Id
 	@Column(name="CommentId")
