@@ -23,13 +23,11 @@ public class Comment {
 	
 	@Id
 	@Column(name="CommentId")
-	Integer cId;
+	Integer CId;
 	
 	@Column(name="Comments")
 	String comments;
 	
 	@Column(name="RestaurantId")
 	Integer restaurantId;
-	
-	
 }

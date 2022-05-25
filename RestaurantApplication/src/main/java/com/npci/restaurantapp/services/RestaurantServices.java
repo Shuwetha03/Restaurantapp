@@ -2,7 +2,10 @@ package com.npci.restaurantapp.services;
 
 
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,56 +16,102 @@ import com.npci.restaurantapp.dao.RestaurantDao;
 import com.npci.restaurantapp.entity.Comment;
 import com.npci.restaurantapp.entity.FoodItem;
 import com.npci.restaurantapp.entity.Restaurant;
+import com.npci.restaurantapp.exceptions.CommentDescriptionException;
+import com.npci.restaurantapp.exceptions.FoodItemIdException;
+import com.npci.restaurantapp.exceptions.FoodItemNullException;
+import com.npci.restaurantapp.exceptions.RestaurantCommentException;
+import com.npci.restaurantapp.exceptions.RestaurantPincodeException;
 
 @Service
 public class RestaurantServices implements IRestaurantServices {
 
 	@Autowired
 	RestaurantDao restaurantdao;
+	@Autowired
 	FoodItemDao foodItemdao;
+	@Autowired
 	CommentDao commentdao;
+
+	Logger LOGGER = LoggerFactory.getLogger("RestaurantServices.class");
 
 	@Override
 	public Restaurant newRestaurant(Restaurant restaurant) {
+		String Pincocoderegx="^[0-9]{1,6}$";
+		Integer pincode = restaurant.getPincode();
+		if(String.valueOf(pincode).matches(Pincocoderegx)) {
+			throw new RestaurantPincodeException("Pincode Should be six Digit");
+		}
 		Restaurant newRestaurant = restaurantdao.save(restaurant);
+		LOGGER.info("Resturent detail:{}",newRestaurant);
 		return newRestaurant;
 	}
 
 	@Override
-	public FoodItem newFoodItem(FoodItem foodItem) {
-		FoodItem Fooditem = foodItemdao.save(foodItem);
+	public FoodItem newFoodItem(FoodItem fooditem) {
+		if(fooditem.getItemType()==null) {
+			throw new FoodItemNullException("FoodItem type is null ");
+		}
+		FoodItem Fooditem = foodItemdao.save(fooditem);
+		LOGGER.info("FoodItem detail:{}",Fooditem);
 		return Fooditem;
 	}
 
 
+	@Override
+	public String cutoutFoodItem(Integer ItemID) {
+		LOGGER.info("ItemId :{}",ItemID);
+		Optional<FoodItem> FoodItem = foodItemdao.findById(ItemID);
+		if(!FoodItem.isPresent()) {
+			throw new FoodItemIdException("There is no Food Item with ItemID:"+ItemID);
+		}
+		foodItemdao.deleteById(ItemID);
+		return "Food Item with ID:" + ItemID +"  deleted Successfully";
+	}
+
 
 	@Override
-	public String cutoutFoodItem( Integer itemID ) {
-		foodItemdao.deleteById(itemID);
-		return "Food Item with ID:" + itemID +"  deleted Successfully";
-	}
-
-	//	@Override
-	//	public FoodItem reviseFoodItem(FoodItem fooditem) {
-	//		foodItemdao.fin
-	//		return null;
-	//	}
-
-
 	public Comment newComment(@RequestBody Comment comment) {
+		if(comment.getComments()== null) {
+			throw new CommentDescriptionException("Comment Field is Empty");
+		}
 		Comment commentsave = commentdao.save(comment);
-
+		LOGGER.info("Comment saved in table is:{}",commentsave);
 		return commentsave;
-
 	}
+
 
 	@Override
 	public List<Comment> Comments() {
-		List<Comment> findAll = commentdao.findAll();
-		return findAll;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
+	@Override
+	public List<Comment> Comments(Integer restID) {
+		LOGGER.info("Resturent ID :{}",restID);
+		List<Comment> findByRestaurantIdOrderByCIdAsc = commentdao.findByRestaurantIdOrderByCIdDesc(restID);
+		if(findByRestaurantIdOrderByCIdAsc.isEmpty()) {
+			throw new RestaurantCommentException("The is no comment for this restaurant id:"+restID);
+		}
+		LOGGER.info("Comment for Resturent ID {}",findByRestaurantIdOrderByCIdAsc);
+		return findByRestaurantIdOrderByCIdAsc;
+	}
 
+	@Override
+	public Restaurant getByfirstSNameOrCityOrStateOrPincode(String sName, String city, String state, Integer pincode) {
+		LOGGER.info("Retrieving User {}",sName,city,state,pincode); 
+		Optional<Restaurant> rest = restaurantdao.findBySNameOrCityOrStateOrPincode(sName,city,state,pincode); 
+		LOGGER.info("Retrived Restaurant{}", rest);
+		return rest.get();
+	}
+	
+    @Override
+    public FoodItem updateFood(FoodItem fooditem) {
+    	LOGGER.info("Updating Food for foodId: {}.",fooditem.getItemId());
+    	restaurantdao.save(fooditem);
+		LOGGER.info("Book Id: {} updated.",fooditem.getItemId());
+		return fooditem;
+    }
 
 }

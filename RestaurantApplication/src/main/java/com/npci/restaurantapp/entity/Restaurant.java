@@ -23,20 +23,19 @@ public class Restaurant {
 	@Id
 	@Column(name="RestaurantId")
 	Integer restaurantId;
-	
+
 	@Column(name="DoorNo")
 	Integer doorNo;
-	
+
 	@Column(name="StreetName")
-	String sName;
-	
+	String SName;
+
 	@Column(name="City")
 	String city;
-	
+
 	@Column(name="State")
-	Long state;
-	
+	String state;
+
 	@Column(name="Pincode")
 	Integer pincode;
-	
 }

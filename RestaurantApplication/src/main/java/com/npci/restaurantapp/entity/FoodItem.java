@@ -28,7 +28,6 @@ public class FoodItem {
 	@Column(name="RestaurantId")
 	Integer restaurantId;
 	
-	
 	@Column(name="ItemType")
 	String itemType;
 	

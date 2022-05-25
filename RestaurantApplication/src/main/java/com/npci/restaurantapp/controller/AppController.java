@@ -23,58 +23,57 @@ import com.npci.restaurantapp.services.IRestaurantServices;
 @RestController
 @RequestMapping("/app")
 public class AppController {
-	
+
 	@Autowired
 	IRestaurantServices irestaurantservices;
-	
+
 	@PostMapping("/rest")
 	public ResponseEntity<Restaurant> newRestaurant(@RequestBody Restaurant restaurant) {
-		
 		Restaurant newRestaurant = irestaurantservices.newRestaurant(restaurant);
-		
 		return new ResponseEntity<>(newRestaurant,HttpStatus.CREATED);
-		
 	}
-	
+
 	@PostMapping("/food")
 	public ResponseEntity<FoodItem> newFoodItem(@RequestBody FoodItem foodItem) {
 		FoodItem newFoodItem = irestaurantservices.newFoodItem(foodItem);
-        return new ResponseEntity<>(newFoodItem,HttpStatus.CREATED);
-        
-		
+		return new ResponseEntity<>(newFoodItem,HttpStatus.CREATED);
+    }
+	
+	@PutMapping("/ud")
+	public ResponseEntity<String> updateFood(@RequestBody FoodItem foodItem) {
+		FoodItem f = irestaurantservices.updateFood(foodItem);
+		return new ResponseEntity<String>(f.getItemType()+" updated successfully",HttpStatus.ACCEPTED);
 	}
-	
-//	@PutMapping("/reviseFoodItem")
-//	public ResponseEntity<FoodItem> reviseFoodItem(@RequestBody FoodItem fooditem) {
-//		
-//		
-////		return new ResponseEntity<>(changeUserDateOfBirth,HttpStatus.OK);
-//		
-//	}
-	
-	@DeleteMapping("/item/{ItemID}")
-	public  ResponseEntity<String> cutoutFoodUtem(@PathVariable(value="ItemID") Integer itemID ) {
-		String cutoutFoodUtem = irestaurantservices.cutoutFoodItem(itemID);
-		
-		return new ResponseEntity<>(cutoutFoodUtem,HttpStatus.NO_CONTENT);
-		
 
+	@DeleteMapping("/item/{ItemID}")
+	public  ResponseEntity<String> cutoutFoodItem(@PathVariable(value="ItemID") Integer itemID ) {
+		String cutoutFoodItem = irestaurantservices.cutoutFoodItem(itemID);
+		return new ResponseEntity<>(cutoutFoodItem,HttpStatus.OK);
 	}
 	
-	
+	@GetMapping("/rest/{sName}/{city}/{state}/{pincode}")
+	public ResponseEntity<Restaurant> getByfirstSNameOrCityOrStateOrPincode(@PathVariable(value="sName",required = false)String sName,@PathVariable(value="city",required = false)String city ,@PathVariable(value="state",required = false)String state,@PathVariable(value="pincode",required = false) Integer pincode)
+	{
+		Restaurant r = irestaurantservices.getByfirstSNameOrCityOrStateOrPincode(sName,city,state,pincode);
+		return new ResponseEntity<>(r,HttpStatus.OK);
+	}
+
+
 	@PostMapping("/comment")
 	public ResponseEntity<Comment> newComment(@RequestBody Comment comment) {
 		Comment newComment = irestaurantservices.newComment(comment);
 		return new ResponseEntity<>(newComment,HttpStatus.CREATED);
-		
-	}
-	
-	@GetMapping("/Comments")
+    }
+
+	@GetMapping("/comments")
 	public ResponseEntity<List<Comment>> Comments(){
 		List<Comment> comments = irestaurantservices.Comments();
 		return new ResponseEntity<>(comments,HttpStatus.ACCEPTED);
-		
-		
-		
 	}
+	@GetMapping("/comments/{restID}")
+	public ResponseEntity<List<Comment>> Comments(@PathVariable(value="restID") Integer restID){
+		List<Comment> comments = irestaurantservices.Comments(restID);
+		return new ResponseEntity<>(comments,HttpStatus.ACCEPTED);
+	}
+
 }
