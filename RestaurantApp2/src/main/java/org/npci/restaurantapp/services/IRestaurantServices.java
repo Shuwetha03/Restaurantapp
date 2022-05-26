@@ -20,6 +20,6 @@ public interface IRestaurantServices {
 	
 	List<Comment> sr(Integer id);
 	
-	List<Restaurant> fil(String street, String city, String state, Integer pin);
-//	List<Restaurant> sss(String street);
+	List<List<FoodItem>> fil(String street, String city, String state, Integer pin);
+
 }

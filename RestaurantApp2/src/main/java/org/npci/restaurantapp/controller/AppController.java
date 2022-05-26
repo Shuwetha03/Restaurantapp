@@ -56,7 +56,7 @@ public class AppController {
 	@DeleteMapping("/d/{itemId}")
 	public ResponseEntity<String> trashingFI(@PathVariable("itemId") Long id){
 		String trashFI = iRestaurantServices.trashFI(id);
-		return new ResponseEntity<String>(trashFI, HttpStatus.NO_CONTENT);
+		return new ResponseEntity<String>(trashFI, HttpStatus.OK);
 	}
 	
 	@PutMapping("/a/nfi")
@@ -78,17 +78,12 @@ public class AppController {
 	}
 	
 	@GetMapping("/f")
-	public ResponseEntity<List<Restaurant>> filter(@RequestParam (value = "str", required = false) String street, @RequestParam (value = "city", required = false) String city, @RequestParam (value = "state", required = false) String state, @RequestParam (value = "pin", required = false) Integer pin){
-		List<Restaurant> fil = iRestaurantServices.fil(street, city, state, pin);
+	public ResponseEntity<List<List<FoodItem>>> filter(@RequestParam (value = "str", required = false) String street, @RequestParam (value = "city", required = false) String city, @RequestParam (value = "state", required = false) String state, @RequestParam (value = "pin", required = false) Integer pin){
+		List<List<FoodItem>> fil = iRestaurantServices.fil(street, city, state, pin);
 		
-		return new ResponseEntity<List<Restaurant>>(fil, HttpStatus.OK);
+		return new ResponseEntity<List<List<FoodItem>>>(fil, HttpStatus.OK);
 	} 
-//	@GetMapping("/f/{str}")
-//	public ResponseEntity<List<Restaurant>> snn(@PathVariable("str") String street){
-//		List<Restaurant> sss = iRestaurantServices.sss(street);
-//		
-//		return new ResponseEntity<List<Restaurant>>(sss, HttpStatus.OK);
-//	} 
+
 	
 	
 }
